@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./output.css" rel="stylesheet">
+  <title>Fibonacci</title>
+  <style>
+    td {
+      border: 1px solid #1a1919;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #64575745;
+    }
+
+    .table-container {
+      max-width: 75vw;
+      /* 75% of viewport width */
+      overflow-x: auto;
+      /* Scroll horizontally if needed */
+      border-radius: 4px;
+      padding: 8px;
+      flex: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="flex justify-center items-center h-screen">
+    <div class="flex flex-col justify-between gap-4 bg-gray-300 rounded-md p-8 max-w-3xl">
+      <div class="flex justify-center">
+        <p class="text-xl font-semibold">Fibonacci</p>
+      </div>
+      <form id="fibonacci-form" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2 p-4">
+          <div class="flex flex-row gap-2 justify-between">
+            <label for="rows">Rows:</label>
+            <input id="rows" type="number" class="bg-gray-100 px-2">
+          </div>
+          <div class="flex flex-row gap-2 justify-between">
+            <label for="cols">Columns:</label>
+            <input id="cols" type="number" class="bg-gray-100 px-2">
+          </div>
+        </div>
+        <div class="flex justify-center">
+          <button id="submit-btn" class="rounded-sm bg-gray-400 py-2 px-4 hover:bg-gray-500" type="button">
+            Submit
+          </button>
+        </div>
+      </form>
+      <div class="table-container">
+        <table id="fibonacci-table" class="min-w-full flex justify-center">
+          <!-- Table content will be inserted here -->
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function fibonacci(rows, cols) {
+      if (rows <= 0 || cols <= 0) {
+        return "invalid input";
+      }
+
+      let result = [];
+      let a = 0, b = 1;
+
+      let fib = [a, b];
+      while (fib.length < rows * cols) {
+        let next = a + b;
+        fib.push(next);
+        a = b;
+        b = next;
+      }
+
+      let index = 0;
+      for (let i = 0; i < rows; i++) {
+        let temp = [];
+        for (let j = 0; j < cols; j++) {
+          temp.push(fib[index]);
+          index++;
+        }
+        result.push(temp);
+      }
+
+      return result;
+    }
+
+    document.getElementById('submit-btn').addEventListener('click', function () {
+      const rows = parseInt(document.getElementById('rows').value);
+      const cols = parseInt(document.getElementById('cols').value);
+      const table = document.getElementById('fibonacci-table');
+
+      // Clear previous table content
+      table.innerHTML = '';
+
+      const fibMatrix = fibonacci(rows, cols);
+
+      if (typeof fibMatrix === 'string') {
+        table.innerHTML = `<tr><td colspan="${cols}">${fibMatrix}</td></tr>`;
+        return;
+      }
+
+      // Create table rows and columns
+      fibMatrix.forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+    });
+  </script>
+</body>
+
+</html>
